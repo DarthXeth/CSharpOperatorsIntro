@@ -4,11 +4,6 @@ using System.Collections.Generic;
 
 namespace CSharpOperatorsIntro
 {
-    //enumeration which handles menu items
-    enum options {oddOrEven, divBy, digitID, bitID, trapezoidArea, rectangleSize, manOnMoon, withinCircle,
-        withinCircleButNotRectangle, fourDigitFormat, bitInPosition, boolBitInPosition, bitFiddling, isPrime,
-        bitExchange};
-
     class Program
     {
         /// <summary>
@@ -25,14 +20,16 @@ namespace CSharpOperatorsIntro
                 userChoice = RunMainMenu();
                 switch (userChoice)
                 {
-                    case 1:
+                    case 1: //odd or even
                         RunOddOrEven();
                         break;
-                    case 2:
+                    case 2: //div by
                         RunDivBy();
                         break;
-                    case 3:
-                    case 4:
+                    case 3: //nth digit of i
+                        RunGetNthDigit();
+                        break;
+                    case 4: //nth bit of i
                     case 5:
                     case 6:
                     case 7:
@@ -69,7 +66,6 @@ namespace CSharpOperatorsIntro
                 Console.WriteLine("01) Use modulus to determine whether a number is odd or even");
                 Console.WriteLine("02) use modulus to determine if x is divisible by y");
                 Console.WriteLine("03) Check and see if the x digit of y right-to-left is z ");
-                Console.WriteLine("    (e.g., is 3 the 4th digit of 3765?)");
                 Console.WriteLine("04) Check and reply whether the xth bit of y is 1 or 0");
                 Console.WriteLine("05) Find the area of a trapezoid with sides x, y and height h");
                 Console.WriteLine("06) Find the are and perimeter of a rectangle with length l and height h");
@@ -195,9 +191,9 @@ namespace CSharpOperatorsIntro
             Console.WriteLine("you if the numbers are divisible");
             Console.WriteLine("");
 
-            string cont = "Y";
+            string continueVal = "Y";
 
-            while (cont.Equals("Y", StringComparison.CurrentCultureIgnoreCase))
+            while (continueVal.Equals("Y", StringComparison.CurrentCultureIgnoreCase))
             {
                 main = LoopForNumericInput("Enter your main number (best if fairly large): ");
                 divOne = LoopForNumericInput("Enter your first divisor: ");
@@ -221,13 +217,23 @@ namespace CSharpOperatorsIntro
                     //neither
                     Console.WriteLine(":-/ {0} is not divisible by {1} or {2}. Try harder.", main, divOne, divTwo);
                 }
-                Console.Write("Continue [Y/N]? ");
-                cont = Console.ReadKey().KeyChar.ToString();
+                continueVal = GetUserContinueChoice();
                 Console.Clear();
             }
             
             
 
+        }
+
+        /// <summary>
+        /// Gives the user a Y/N continue prompt and returns the choice
+        /// </summary>
+        /// <returns></returns>
+        private static string GetUserContinueChoice()
+        {
+            Console.Write("Continue [Y/N]? ");
+            string continueVal = Console.ReadKey().KeyChar.ToString();
+            return continueVal;
         }
 
         /// <summary>
@@ -261,6 +267,53 @@ namespace CSharpOperatorsIntro
             }
 
             return numValue;
+        }
+
+        /// <summary>
+        /// This function asks the user for two inputs: i, an integer, and n,
+        /// which represents the digit of i (from right to left). For example, 
+        /// the nth digit of i, where i is 1234, and n is 3, is 2
+        /// the nth digit of i, where i is 1234 and n is 1, is 4
+        /// </summary>
+        private static void RunGetNthDigit()
+        {
+            //run the intro message
+            Console.Clear();
+            Console.WriteLine("This module asks for 2 numbers, an integer i and a number n");
+            Console.WriteLine("We will then find the nth digit of i");
+            Console.WriteLine("Remember, the nth digit is counted rightward; ones to tens to hundreds to ... n");
+            Console.WriteLine("");
+
+            string continueVal = "Y";
+
+            while (continueVal.Equals("Y", StringComparison.CurrentCultureIgnoreCase))
+            {
+                //get i
+                int i = LoopForNumericInput("Enter a large integer: ");
+                int n = -1;
+
+                //n must be <= the number of placesof i, so while it
+                while (true)
+                {
+                    n = LoopForNumericInput("Enter an int for n; n must be less than the number of digits in i: ");
+                    if (n <= i.ToString().ToCharArray().Length)
+                    {   //we're good
+                        break;
+                    }   //keep looping...
+                    Console.WriteLine("it is impossible to find the {0} of {1}", n, i);
+                    Console.WriteLine("Remember that n must be less than the number of digits in i");
+                }
+
+                char[] iChars = i.ToString().ToCharArray();
+
+                //we're going from right to left...
+                char selected = iChars[iChars.Length - n];
+
+                Console.WriteLine("The {0}th digit of {1} is {2}", n, i, selected);
+
+                continueVal = GetUserContinueChoice();
+                Console.Clear();
+            }
         }
     }
 }
